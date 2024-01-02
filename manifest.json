@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "Stay on Task",
+  "icons": {
+    "128": "check.png",
+    "48": "check.png",
+    "16": "check.png"
+  },
+  "version": "1.0.0",
+  "description": "Stay on Task is a Chrome extension that helps you stay focused on your work by blocking distracting websites.",
+  "background": {
+    "service_worker": "service_worker.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "check.png",
+      "32": "check.png",
+      "48": "check.png",
+      "128": "check.png"
+    }
+  },
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "permissions": [
+    "scripting",
+    "storage",
+    "tabs",
+    "activeTab"
+   ],
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_start"
+    }
+  ]
+  }
+
