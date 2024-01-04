@@ -146,3 +146,42 @@ li{
 .squares li[data-level="3"] {
   background-color: #196127;
 }
+
+.todo-container {
+  max-width: 300px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f4f4f4;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#todo-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.todo-item label {
+  flex-grow: 1;
+  margin-right: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.todo-item input[type="checkbox"] {
+  margin-left: 10px;
+}
+
+.complete {
+  text-decoration: line-through;
+  color: #aaa;
+}

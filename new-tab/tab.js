@@ -5,71 +5,114 @@ for (var i = 1; i < 365; i++) {
     squares.insertAdjacentHTML('beforeend', `<li data-level="${level}"></li>`);
 }
 
-// function animateRingRipple() {
-//     const ripple = document.getElementById('ripple');
-//     const duration = 1500; // Animation duration in milliseconds
+var todoList = document.getElementById('todo-list');
 
-//     // Set the initial state of the circle
-//     ripple.setAttribute('r', '10');
-//     ripple.setAttribute('stroke-opacity', '1');
+const completeItem = (e) => {
+    const item = e.target.parentNode;
+    if (e.target.checked) {
+        var currentDate = new Date();
+        var key = formatDate(currentDate);
+        item.classList.remove('complete');
+        removeTask(key, item.textContent);
+    } else {
+        addTaskWithDate(item.textContent);
+        item.classList.add('complete');
+    }
+    addTaskWithDate(item.textContent);
+};
 
-//     // Create and run the animation
-//     const animation = ripple.animate(
-//         [
-//             { r: '10', strokeOpacity: '1' },
-//             { r: '30', strokeOpacity: '0' },
-//             { r: '10', setOpacitiy: '1' },
-//             { r: '30', strokeOpacity: '0' },
-//             { r: '10', setOpacitiy: '1' },
-//         ],
-//         {
-//             duration: duration,
-//             easing: 'ease-in-out',
-//         },
-//     );
+// Function to add a new task
+function addTask(taskName) {
+    console.log('adding: ', taskName);
+    var listItem = document.createElement('li');
+    listItem.className = 'todo-item';
 
-//     // Reset the circle to its initial state after the animation completes
-//     // animation.onfinish = () => {
-//     //     ripple.setAttribute('r', '10');
-//     //     ripple.setAttribute('stroke-opacity', '1');
-//     // };
-// }
+    var checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.addEventListener('change', completeItem);
 
-// Call the function to start the animation
-// setInterval(animateRingRipple, 2000);
-// animateRingRipple();
+    var label = document.createElement('label');
+    label.textContent = taskName;
 
-// var context = document
-//     .createElement('canvas')
-//     .getContext('2d', { willReadFrequently: true });
-// var start = new Date();
-// var lines = 16,
-//     cW = 40,
-//     cH = 40;
+    listItem.appendChild(label);
+    listItem.appendChild(checkbox);
 
-// var start = new Date();
+    todoList.appendChild(listItem);
+}
 
-// setInterval(function () {
-//     console.log('setInterval');
-//     var elapsedSeconds = (new Date() - start) / 1000;
-//     var rippleRadius = Math.sin(elapsedSeconds) * 50 + 50; // Adjust amplitude and frequency for the ripple effect
+// Example: Add some initial tasks
+addTask('Study Japanese');
+addTask('Learn something new');
 
-//     context.save();
-//     context.clearRect(0, 0, cW, cH);
-//     context.translate(cW / 2, cH / 2);
+// Function to add a new task with date
+function addTaskWithDate(taskName) {
+    var currentDate = new Date();
+    var formattedDate = formatDate(currentDate);
 
-//     context.beginPath();
-//     context.arc(0, 0, rippleRadius, 0, 2 * Math.PI);
-//     context.lineWidth = cW / 50;
-//     context.strokeStyle = 'stroke: rgb(0, 0, 0, 0.5)';
-//     context.stroke();
+    var taskObject = {
+        date: formattedDate,
+        task: taskName,
+    };
 
-//     var imageData = context.getImageData(10, 10, 19, 19, {
-//         willReadFrequently: true,
-//     });
-//     chrome.action.setIcon({
-//         imageData: imageData,
-//     });
+    // Save the task to localStorage with the key as the formatted date
+    saveTask(formattedDate, taskObject);
+}
 
-//     context.restore();
-// }, 1000 / 30);
+// Function to save a task to localStorage, avoiding duplicates
+function saveTask(key, taskObject) {
+    // Retrieve existing tasks or initialize an empty array
+    var existingTasks = JSON.parse(localStorage.getItem(key)) || [];
+
+    // Check if the task already exists based on the task name
+    var isDuplicate = existingTasks.some(function (existingTask) {
+        return existingTask.task === taskObject.task;
+    });
+
+    // If it's not a duplicate, add the new task to the array
+    if (!isDuplicate) {
+        existingTasks.push(taskObject);
+
+        // Save the updated tasks array back to localStorage
+        localStorage.setItem(key, JSON.stringify(existingTasks));
+    } else {
+        console.log('Task already exists:', taskObject.task);
+    }
+}
+
+// Function to remove a task from localStorage
+function removeTask(key, taskName) {
+    console.log('removing: ', taskName);
+    console.log('key: ', key);
+    // Retrieve existing tasks or initialize an empty array
+    var existingTasks = JSON.parse(localStorage.getItem(key)) || [];
+
+    // Find the index of the task with the specified name
+    var indexToRemove = existingTasks.findIndex(function (existingTask) {
+        return existingTask.task === taskName;
+    });
+
+    // If the task is found, remove it from the array
+    if (indexToRemove !== -1) {
+        existingTasks.splice(indexToRemove, 1);
+
+        // Save the updated tasks array back to localStorage
+        localStorage.setItem(key, JSON.stringify(existingTasks));
+
+        console.log('Task removed:', taskName);
+    } else {
+        console.log('Task not found:', taskName);
+    }
+}
+
+// Function to format a date as mm/dd/yyyy
+function formatDate(date) {
+    var day = date.getDate();
+    var month = date.getMonth() + 1; // Months are zero-based
+    var year = date.getFullYear();
+
+    // Ensure two digits for day and month
+    day = day < 10 ? '0' + day : day;
+    month = month < 10 ? '0' + month : month;
+
+    return month + '/' + day + '/' + year;
+}
