@@ -1,187 +1,156 @@
 :root {
-  --square-size: 15px;
-  --square-gap: 5px;
-  --week-width: calc(var(--square-size) + var(--square-gap));
-}
-
-li{
-  list-style: none;
-}
-
-.btn-class-name {
-  --primary: 255, 90, 120;
-  --secondary: 150, 50, 60;
-  width: 60px;
-  height: 50px;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  user-select: none;
-  touch-action: manipulation;
-  outline: 10px solid rgb(var(--primary), .5);
-  border-radius: 100%;
-  position: relative;
-  transition: .3s;
-  padding:30px;
-  margin-top: 20px;
-  margin-left: 20px;
-}
-
-.btn-class-name .back {
-  background: rgb(var(--secondary));
-  border-radius: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.btn-class-name .front {
-  background: linear-gradient(0deg, rgba(var(--primary), .6) 20%, rgba(var(--primary)) 50%);
-  box-shadow: 0 .5em 1em -0.2em rgba(var(--secondary), .5);
-  border-radius: 100%;
-  position: absolute;
-  border: 1px solid rgb(var(--secondary));
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.2rem;
-  font-weight: 600;
-  font-family: inherit;
-  transform: translateY(-15%);
-  transition: .15s;
-  color: rgb(var(--secondary));
-}
-
-.btn-class-name:active .front {
-  transform: translateY(0%);
-  box-shadow: 0 0;
-}
-
-.button-container{
-  border: 1px solid red;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  row-gap: 20px;
+    --square-size: 15px;
+    --square-gap: 5px;
+    --week-width: calc(var(--square-size) + var(--square-gap));
 }
 
 #ripple {
-  fill: transparent;
-  stroke: #3498db;
-  stroke-width: 4;
-}
-
-.months { grid-area: months; }
-.days { grid-area: days; }
-.squares { grid-area: squares; }
-
-.graph {
-  display: inline-grid;
-  grid-template-areas: "empty months"
-                       "days squares";
-  grid-template-columns: auto 1fr;
-  grid-gap: 10px;
-  width: 100%;
-  overflow: scroll;
-  padding-right: 100px;
+    fill: transparent;
+    stroke: #3498db;
+    stroke-width: 4;
 }
 
 .months {
-  display: grid;
-  grid-template-columns: calc(var(--week-width) * 4) /* Jan */
-                         calc(var(--week-width) * 4) /* Feb */
-                         calc(var(--week-width) * 4) /* Mar */
-                         calc(var(--week-width) * 5) /* Apr */
-                         calc(var(--week-width) * 4) /* May */
-                         calc(var(--week-width) * 4) /* Jun */
-                         calc(var(--week-width) * 5) /* Jul */
-                         calc(var(--week-width) * 4) /* Aug */
-                         calc(var(--week-width) * 4) /* Sep */
-                         calc(var(--week-width) * 5) /* Oct */
-                         calc(var(--week-width) * 4) /* Nov */
-                         calc(var(--week-width) * 5) /* Dec */;
+    grid-area: months;
+}
+.days {
+    grid-area: days;
+}
+.squares {
+    grid-area: squares;
+}
+
+.graph {
+    display: inline-grid;
+    grid-template-areas:
+        'empty months'
+        'days squares';
+    grid-template-columns: auto 1fr;
+    grid-gap: 10px;
+    width: 100%;
+    overflow: scroll;
+    padding-right: 100px;
+}
+
+.months {
+    display: grid;
+    grid-template-columns:
+        calc(var(--week-width) * 4) /* Jan */
+        calc(var(--week-width) * 4) /* Feb */
+        calc(var(--week-width) * 4) /* Mar */
+        calc(var(--week-width) * 5) /* Apr */
+        calc(var(--week-width) * 4) /* May */
+        calc(var(--week-width) * 4) /* Jun */
+        calc(var(--week-width) * 5) /* Jul */
+        calc(var(--week-width) * 4) /* Aug */
+        calc(var(--week-width) * 4) /* Sep */
+        calc(var(--week-width) * 5) /* Oct */
+        calc(var(--week-width) * 4) /* Nov */
+        calc(var(--week-width) * 5) /* Dec */;
 }
 
 .days,
 .squares {
-  display: grid;
-  grid-gap: var(--square-gap);
-  grid-template-rows: repeat(7, var(--square-size));
+    display: grid;
+    grid-gap: var(--square-gap);
+    grid-template-rows: repeat(7, var(--square-size));
 }
 
 .squares {
-  grid-auto-flow: column;
-  grid-auto-columns: var(--square-size);
+    grid-auto-flow: column;
+    grid-auto-columns: var(--square-size);
 }
 
 .graph {
-  padding: 20px;
-  border: 1px #e1e4e8 solid;
-  margin: 20px;
+    padding: 20px;
+    border: 1px #e1e4e8 solid;
+    margin: 20px;
 }
 
 .days li:nth-child(odd) {
-  visibility: hidden;
+    visibility: hidden;
 }
 
 .squares li {
-  background-color: #ebedf0;
+    background-color: #ebedf0;
 }
 
-.squares li[data-level="1"] {
-  background-color: #c6e48b;
+.squares li[data-level='1'] {
+    background-color: #c6e48b;
 }
 
-.squares li[data-level="2"] {
-  background-color: #7bc96f;
+.squares li[data-level='2'] {
+    background-color: #7bc96f;
 }
 
-.squares li[data-level="3"] {
-  background-color: #196127;
+.squares li[data-level='3'] {
+    background-color: #196127;
 }
 
 .todo-container {
-  max-width: 300px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #f4f4f4;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 #todo-list {
-  list-style-type: none;
-  padding: 0;
+    list-style-type: none;
+    padding: 0;
 }
 
 .todo-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #ddd;
-  padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
 }
 
 .todo-item label {
-  flex-grow: 1;
-  margin-right: 10px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+    flex-grow: 1;
+    margin-right: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
-.todo-item input[type="checkbox"] {
-  margin-left: 10px;
+.todo-item input[type='checkbox'] {
+    margin-left: 10px;
 }
 
 .complete {
-  text-decoration: line-through;
-  color: #aaa;
+    text-decoration: line-through;
+    color: #aaa;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+/* Overlay to darken the background when the modal is open */
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
 }

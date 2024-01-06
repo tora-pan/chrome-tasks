@@ -1,4 +1,3 @@
-console.log('tab.js is running!');
 const squares = document.querySelector('.squares');
 for (var i = 1; i < 365; i++) {
     const level = Math.floor(Math.random() * 3);
@@ -7,23 +6,34 @@ for (var i = 1; i < 365; i++) {
 
 var todoList = document.getElementById('todo-list');
 
+const getTodaysList = () => {
+    const key = formatDate(new Date());
+    const storage = JSON.parse(localStorage.getItem(key));
+    console.log('storage: ', storage);
+    return storage || [];
+};
+
 const completeItem = (e) => {
     const item = e.target.parentNode;
-    if (e.target.checked) {
-        var currentDate = new Date();
-        var key = formatDate(currentDate);
+    if (!e.target.checked) {
         item.classList.remove('complete');
-        removeTask(key, item.textContent);
     } else {
-        addTaskWithDate(item.textContent);
+        // addTaskWithDate(item.textContent);
         item.classList.add('complete');
     }
-    addTaskWithDate(item.textContent);
+};
+
+const trashItem = (e) => {
+    const item = e.target.parentNode;
+    const taskName = item.textContent;
+    const key = formatDate(new Date());
+    removeTask(key, taskName);
+    item.remove();
 };
 
 // Function to add a new task
 function addTask(taskName) {
-    console.log('adding: ', taskName);
+    var newTodo = document.getElementById('new-todo-input').value;
     var listItem = document.createElement('li');
     listItem.className = 'todo-item';
 
@@ -31,18 +41,21 @@ function addTask(taskName) {
     checkbox.type = 'checkbox';
     checkbox.addEventListener('change', completeItem);
 
+    const trash = document.createElement('button');
+    trash.className = 'trash';
+    trash.addEventListener('click', trashItem);
+
     var label = document.createElement('label');
     label.textContent = taskName;
 
-    listItem.appendChild(label);
+    listItem.appendChild(document.createTextNode(newTodo));
     listItem.appendChild(checkbox);
+    listItem.appendChild(trash);
 
     todoList.appendChild(listItem);
+    addTaskWithDate(newTodo);
+    closeModal();
 }
-
-// Example: Add some initial tasks
-addTask('Study Japanese');
-addTask('Learn something new');
 
 // Function to add a new task with date
 function addTaskWithDate(taskName) {
@@ -54,25 +67,27 @@ function addTaskWithDate(taskName) {
         task: taskName,
     };
 
-    // Save the task to localStorage with the key as the formatted date
-    saveTask(formattedDate, taskObject);
+    saveTaskToLocalStorage(formattedDate, taskObject);
 }
 
 // Function to save a task to localStorage, avoiding duplicates
-function saveTask(key, taskObject) {
-    // Retrieve existing tasks or initialize an empty array
-    var existingTasks = JSON.parse(localStorage.getItem(key)) || [];
+function saveTaskToLocalStorage(key, taskObject) {
+    var existingTasks = getTodaysList();
+    if (existingTasks.length === 0) {
+        console.log('here');
+        existingTasks.push(taskObject);
+        localStorage.setItem(key, JSON.stringify(existingTasks));
+        return;
+    }
 
-    // Check if the task already exists based on the task name
-    var isDuplicate = existingTasks.some(function (existingTask) {
+    var isDuplicate = existingTasks.some((existingTask) => {
         return existingTask.task === taskObject.task;
     });
 
-    // If it's not a duplicate, add the new task to the array
     if (!isDuplicate) {
+        console.log('adding: ', taskObject.task);
+        console.log('key: ', key);
         existingTasks.push(taskObject);
-
-        // Save the updated tasks array back to localStorage
         localStorage.setItem(key, JSON.stringify(existingTasks));
     } else {
         console.log('Task already exists:', taskObject.task);
@@ -84,27 +99,16 @@ function removeTask(key, taskName) {
     console.log('removing: ', taskName);
     console.log('key: ', key);
     // Retrieve existing tasks or initialize an empty array
-    var existingTasks = JSON.parse(localStorage.getItem(key)) || [];
-
+    var existingTasks = getTodaysList();
+    console.log(existingTasks);
     // Find the index of the task with the specified name
-    var indexToRemove = existingTasks.findIndex(function (existingTask) {
+    var item = existingTasks.some((existingTask) => {
+        console.log('existingTask: ', existingTask);
+        console.log('taskName: ', taskName);
         return existingTask.task === taskName;
     });
+    console.log('item', item);
 
-    // If the task is found, remove it from the array
-    if (indexToRemove !== -1) {
-        existingTasks.splice(indexToRemove, 1);
-
-        // Save the updated tasks array back to localStorage
-        localStorage.setItem(key, JSON.stringify(existingTasks));
-
-        console.log('Task removed:', taskName);
-    } else {
-        console.log('Task not found:', taskName);
-    }
-}
-
-// Function to format a date as mm/dd/yyyy
 function formatDate(date) {
     var day = date.getDate();
     var month = date.getMonth() + 1; // Months are zero-based
@@ -116,3 +120,65 @@ function formatDate(date) {
 
     return month + '/' + day + '/' + year;
 }
+
+const saveBtn = document.getElementById('saveBtn');
+const cancelBtn = document.getElementById('cancelBtn');
+const addBtn = document.getElementById('addBtn');
+
+saveBtn.addEventListener('click', addTask);
+cancelBtn.addEventListener('click', closeModal);
+addBtn.addEventListener('click', openModal);
+
+function openModal() {
+    console.log('openModal');
+    // Show the modal and overlay
+    document.getElementById('modal').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+}
+
+function closeModal() {
+    // Hide the modal and overlay
+    document.getElementById('modal').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
+
+    // Clear the input field
+    document.getElementById('new-todo-input').value = '';
+}
+
+const addToList = (item) => {
+    const listItem = document.createElement('li');
+    listItem.className = 'todo-item';
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.addEventListener('change', completeItem);
+
+    const trash = document.createElement('button');
+    trash.className = 'trash';
+    trash.addEventListener('click', trashItem);
+
+    const label = document.createElement('label');
+    label.textContent = item;
+
+    listItem.appendChild(label);
+    listItem.appendChild(checkbox);
+    listItem.appendChild(trash);
+
+    todoList.appendChild(listItem);
+};
+
+function populateList(key) {
+    // Clear the todo list
+    document.getElementById('todo-list').innerHTML = '';
+    // Retrieve existing tasks or initialize an empty array
+    var existingTasks = JSON.parse(localStorage.getItem(key)) || [];
+
+    // Loop through tasks and add them to the todo list
+    existingTasks.forEach((task) => {
+        console.log(task.task);
+        addToList(task.task);
+        // addTask(task.task);
+    });
+}
+
+populateList(formatDate(new Date()));
